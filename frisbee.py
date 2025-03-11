@@ -16,12 +16,23 @@ with open('sites.txt', 'r', encoding='utf-8') as file:
 # 生成任务列表（更新字段结构）
 tasks = [{
     "url": url,
-    "home_status": 0,        # 首页可访问状态 0-未检测 1-正常 0-异常
+    "home_status": 0,        # 首页可访问状态 0-未检测 1-正常 -1-异常
     "home_black": 0,         # 首页篡改状态 0-未篡改 1-已篡改
-    "ssl_status": 0,         # SSL支持状态 0-不支持 1-支持
+    "ssl_status": 0,         # SSL支持状态 0-不支持 1-支持 -1-异常
     "ssl_date": ""           # SSL证书到期日期
 } for url in urls]
 
-# 将任务列表保存为sites.json
-with open('sites.json', 'w', encoding='utf-8') as file:
+# 新增导入
+import os
+from datetime import datetime
+
+# 创建存储目录
+os.makedirs('db/json', exist_ok=True)
+
+# 生成带日期的文件名
+date_str = datetime.now().strftime('%Y-%m-%d')
+output_path = f'db/json/{date_str}.json'
+
+# 将任务列表保存为带日期的json文件
+with open(output_path, 'w', encoding='utf-8') as file:
     json.dump(tasks, file, ensure_ascii=False, indent=4)
