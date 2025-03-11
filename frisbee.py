@@ -1,25 +1,56 @@
 import json
 
-# 读取sites.txt文件并补全URL协议
+# 读取sites.txt文件并处理注释
 with open('sites.txt', 'r', encoding='utf-8') as file:
-    raw_urls = [line.strip() for line in file if line.strip() and not line.strip().startswith('#')]
+    raw_urls = []
+    in_comment_block = False  # 多行注释标记
     
+    for line in file:
+        line = line.strip()
+        if not line:
+            continue
+        
+        # 处理多行注释
+        if in_comment_block:
+            if '*/' in line:
+                line = line.split('*/', 1)[1].strip()
+                in_comment_block = False
+            else:
+                continue
+        if '/*' in line:
+            if '*/' in line:  # 单行内的完整注释
+                line = line.split('/*', 1)[0].strip() + line.split('*/', 1)[1].strip()
+            else:
+                line = line.split('/*', 1)[0].strip()
+                in_comment_block = True
+        
+        # 处理单行注释
+        if '#' in line:
+            line = line.split('#', 1)[0].strip()
+        
+        if line:
+            raw_urls.append(line)
+
     # 自动补全URL协议
+    # 提取域名部分
     urls = []
+    # 在文件顶部添加导入
+    from urllib.parse import urlparse
     for url in raw_urls:
-        if not url.startswith(('http://', 'https://')):
-            urls.append(f'http://{url}')  # 修改为默认使用HTTP协议
-            print(f"自动补全协议头: {url} -> http://{url}")
-        else:
-            urls.append(url)
+        # 解析URL结构
+        parsed = urlparse(url)
+        # 优先获取网络位置，若不存在则取路径的第一部分
+        domain = parsed.netloc if parsed.netloc else parsed.path.split('/')[0]
+        urls.append(domain)
+        print(f"已处理URL: {url} -> {domain}")
 
 # 生成任务列表（更新字段结构）
 tasks = [{
-    "url": url,
-    "home_status": 0,        # 首页可访问状态 0-未检测 1-正常 -1-异常
-    "home_black": 0,         # 首页篡改状态 0-未篡改 1-已篡改
-    "ssl_status": 0,         # SSL支持状态 0-不支持 1-支持 -1-异常
-    "ssl_date": ""           # SSL证书到期日期
+    "host_name": url,   # 修改字段名
+    "home_status": 0,   # 首页可访问状态 0-未检测 1-正常 -1-异常
+    "home_black": 0,    # 首页篡改状态 0-未篡改 1-已篡改
+    "ssl_status": 0,    # SSL支持状态 0-不支持 1-支持 -1-异常
+    "ssl_date": ""      # SSL证书到期日期      
 } for url in urls]
 
 # 新增导入
@@ -35,4 +66,5 @@ output_path = f'db/json/{date_str}.json'
 
 # 将任务列表保存为带日期的json文件
 with open(output_path, 'w', encoding='utf-8') as file:
+    file.truncate(0)  # 清空文件内容
     json.dump(tasks, file, ensure_ascii=False, indent=4)
