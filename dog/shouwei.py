@@ -4,6 +4,7 @@ import datetime
 import logging
 import os
 import json
+import time  # 导入 time 模块
 
 # 配置日志记录
 date_str = datetime.datetime.now().strftime('%Y-%m-%d')
@@ -39,6 +40,8 @@ def main():
                     entry['ssl_status'] = -1  # 端口连接失败，将 ssl_status 设为 -1
                     logging.info(f"443端口连接 {hostname} 失败")
                     continue
+                # 增加 100 毫秒的延迟
+                time.sleep(0.1)
                 try:
                     with socket.create_connection((hostname, 443)) as sock:
                         with context.wrap_socket(sock, server_hostname=hostname) as sslsock:
