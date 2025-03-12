@@ -48,9 +48,11 @@ with open('sites.txt', 'r', encoding='utf-8') as file:
 tasks = [{
     "host_name": url,   # 修改字段名
     "home_status": 0,   # 首页可访问状态 0-未检测 1-正常 -1-异常
-    "home_black": 0,    # 首页篡改状态 0-未篡改 1-已篡改
+    "home_has_change": 0,    # 首页篡改状态 0-未篡改 1-已篡改
     "ssl_status": 0,    # SSL支持状态 0-不支持 1-支持 -1-异常
-    "ssl_date": ""      # SSL证书到期日期      
+    "ssl_date": "",     # SSL证书到期日期
+    "has_change": 0,    # 是否有变化 0-无变化 1-有变化
+    "has_prohibited_word": 0 # 是否存在违禁词 0-不存在 1-存在
 } for url in urls]
 
 # 新增导入
