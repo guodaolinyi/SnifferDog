@@ -8,7 +8,8 @@ import time  # 导入 time 模块
 
 # 配置日志记录
 date_str = datetime.datetime.now().strftime('%Y-%m-%d')
-log_dir = os.path.join('log', 'shouwei')
+# 修改 log_dir 以指向 shouwei.py 上级目录的 log 文件夹
+log_dir = os.path.join('..', 'log', 'shouwei')
 if not os.path.exists(log_dir):
     os.makedirs(log_dir)
 log_file = os.path.join(log_dir, f'{date_str}.log')
@@ -26,11 +27,16 @@ def test_port_443(hostname):
 def main():
     # 获取当日日期
     date_str = datetime.datetime.now().strftime('%Y-%m-%d')
-    json_path = os.path.join('db', 'json', f'{date_str}.json')
+    # 修改 json_path 以指向 shouwei.py 上级目录的 db 文件夹
+    json_path = os.path.join('..', 'db', 'json', f'{date_str}.json')
+
     try:
         with open(json_path, 'r+', encoding='utf-8') as file:
             data = json.load(file)
             for entry in data:
+                # 添加SSL状态过滤条件
+                if entry.get('has_ssl') != 1:
+                    continue
                 hostname = entry.get('host_name')
                 if hostname is None:
                     continue

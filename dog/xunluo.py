@@ -42,7 +42,10 @@ def create_database():
     创建 SQLite 数据库并初始化网页内容表
     """
     # 修改数据库连接位置
-    conn = sqlite3.connect('db/archive.db')
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(current_dir)
+    db_path = os.path.join(parent_dir, 'db', 'archive.db')
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     
     # 创建表，包含更多字段以便后续分析
@@ -237,7 +240,11 @@ def fetch_webpage_content(url):
 
 def main():
     date_str = datetime.datetime.now().strftime('%Y-%m-%d')
-    json_path = os.path.join('db', 'json', f'{date_str}.json')
+    # 获取当前文件的上级目录
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(current_dir)
+    # 修改json_path引用位置
+    json_path = os.path.join(parent_dir, 'db', 'json', f'{date_str}.json')
     try:
         with open(json_path, 'r+', encoding='utf-8') as file:
             data = json.load(file)
