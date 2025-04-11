@@ -2,3 +2,4 @@ sites.txt
 .venv
 .idea
 __pycache__
+.env

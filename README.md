@@ -2,11 +2,14 @@
 自动化爬虫每天检查网站是否被篡改
 
 ## 使用方法
-在项目根目录创建sites.txt文件，每行一个网址或域名，如：
+在项目根目录创建sites.txt文件(将sites.txt.bak重命名为sites.txt)，每行一个网址或域名，如：
 ```
-www.baidu.com
+https://www.baidu.com # 如需检查ssl需要加https协议头
 www.google.com
+www.qq.com
 ```
+sites.txt 中可以使用 # 单行或 /* */ 多行注释进行注释
+
 运行frisbee.py 创建网站检查任务
 
 本项目使用青龙面板进行自动化任务调度，具体配置方法请参考青龙面板文档。
@@ -17,6 +20,7 @@ www.google.com
 | frisbee.py | 狗狗飞盘 | 通过sites.txt 中配置的网站列表生成任务网站列表 |
 | xunluo.py |巡逻犬 |每天自动抓取首页比较哈希检查是否被篡改 |
 | shouwei.py | 守卫犬 | 定期检测网站SSL证书状态，提前30天预警到期风险，支持自动识别证书链有效性 |
+| liulang.py | 流浪狗 | 删除非任务记录释放数据库空间 |
 | commmon.py | 公共模块 | 爬虫的公用部分 |
 | sites.txt | 网站列表 | 配置需要监控的网站列表 |
 
